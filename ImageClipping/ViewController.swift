@@ -53,10 +53,25 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     }
     //MARK: - UIImagePickerControllerDelegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        picker.dismissViewControllerAnimated(true , completion: nil)
+
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-//        navigationController?.pushViewController(ImageEDViewController(image: image), animated: true)
+        let clippingVC = ImageClippingController()
+        clippingVC.clippingImage = image
+        picker.navigationBar.hidden = true
+        picker.pushViewController(clippingVC, animated: true)
         
+    }
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+//        let clippingVC = ImageClippingController()
+//        clippingVC.clippingImage = image
+//        picker.navigationBar.hidden = true
+//        picker.navigationController!.pushViewController(TestViewController(), animated: true)
+    }
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        self .dismissViewControllerAnimated(true , completion: nil)
+    }
+    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+        UIApplication.sharedApplication().statusBarStyle = .LightContent
     }
 
 

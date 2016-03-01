@@ -14,7 +14,11 @@ struct Clipping {
     static var MaskViewBorderColor = UIColor.lightGrayColor()
     static var MaskViewBorderWidth:CGFloat = 2
 }
-class ImageClippingController: UIViewController {
+protocol ImageClippingDelegate : NSObjectProtocol {
+    func imageClipping(clipping:ImageClippingController, didFinishClippingWithImage image:UIImage)
+    func imageClippingDidCancel(clipping:ImageClippingController)
+}
+class ImageClippingController: UIViewController,UIScrollViewDelegate {
 
     //MARK : - 属性列表
     private var imageView:UIImageView?
@@ -39,11 +43,22 @@ class ImageClippingController: UIViewController {
     //MARK : - 生命周期
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+                // Do any additional setup after loading the view.
     }
     override func loadView() {
         super.loadView()
+        let topView = UIView()
+        view.addSubview(topView)
+        view.addSubview(maskView)
+        view.bringSubviewToFront(maskView)
+        topView.backgroundColor = UIColor.purpleColor()
+        topView.snp_makeConstraints { (make) -> Void in
+            make.edges.equalTo(0)
+        }
+        topView.addSubview(scrollView)
+        scrollView.snp_makeConstraints { (make) -> Void in
+            make.edges.equalTo(0)
+        }
         clippingWidth = 320
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         imageView = UIImageView(frame: CGRectZero)
@@ -154,6 +169,18 @@ class ImageClippingController: UIViewController {
         rect.size.width = clippingWidth * zoomScale
         rect.size.height = clippingHeight * zoomScale
         let cr = CGImageCreateWithImageInRect(imageView?.image?.CGImage, rect)
+        if let crv = cr {
+            let cropped = UIImage(CGImage: crv)
+            //TODO: cropped为剪裁完成图片可添加协议调用
+        }else {
+            let alert = UIAlertView(title: "", message: "裁剪失败，请重试", delegate: nil, cancelButtonTitle: "确定", otherButtonTitles: "", "")
+            alert.show()
+        }
+        
+       
+    }
+    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+        return imageView
     }
     //MARK : - 
     //MARK : -
