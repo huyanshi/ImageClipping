@@ -8,9 +8,11 @@
 
 import UIKit
 
-class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
+class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate,ImageClippingDelegate {
 
     var sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+    
+    @IBOutlet weak var imageView: UIImageView!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -56,6 +58,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
 
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
         let clippingVC = ImageClippingController()
+        clippingVC.imageClippingDelegate = self
         clippingVC.clippingImage = image
         picker.navigationBar.hidden = true
         picker.pushViewController(clippingVC, animated: true)
@@ -72,6 +75,14 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     }
     func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
         UIApplication.sharedApplication().statusBarStyle = .LightContent
+    }
+    //MARK : - ImageClippingDelegate
+    func imageClippingDidCancel(clipping: ImageClippingController) {
+        
+    }
+    func imageClipping(clipping: ImageClippingController, didFinishClippingWithImage image: UIImage) {
+        self.imageView.image = image
+        clipping.dismissViewControllerAnimated(true , completion: nil)
     }
 
 

@@ -25,7 +25,7 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
     private var clippingWidth:CGFloat = 320
     private var clippingHeight:CGFloat = 160
     private var currentScaleIsHeight:Bool = true
-    
+    var imageClippingDelegate:ImageClippingDelegate?
     var clippingImage:UIImage? {
         didSet {
             dispatch_async(dispatch_get_global_queue(0, 0)) { () -> Void in
@@ -59,6 +59,18 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
         scrollView.snp_makeConstraints { (make) -> Void in
             make.edges.equalTo(0)
         }
+        let bottomView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 73))
+        topView.addSubview(bottomView)
+        bottomView.addSubview(clippingBtn)
+        clippingBtn.snp_makeConstraints { (make) -> Void in
+            make.center.equalTo(0)
+            make.size.equalTo(CGSize(width: 30, height: 30))
+        }
+        bottomView.backgroundColor = UIColor.blackColor()
+        bottomView.snp_makeConstraints { (make) -> Void in
+            make.left.right.bottom.equalTo(0)
+            make.height.equalTo(73)
+        }
         clippingWidth = 320
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         imageView = UIImageView(frame: CGRectZero)
@@ -78,7 +90,11 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
             widthScale()
         }
         squareStyle()
-        scrollView.contentOffset = CGPoint(x: ((imageView?.frame.width)! - clippingWidth)/2, y: ((imageView?.frame.height)! - scrollView.frame.width)/2)
+        scrollView.contentOffset = CGPoint(x: ((imageView?.frame.size.width)! - clippingWidth)/2, y: ((imageView?.frame.size.height)! - scrollView.frame.width)/2)
+    }
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.hidden = false
     }
 
     override func didReceiveMemoryWarning() {
@@ -102,6 +118,13 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
         scrollView.maximumZoomScale = 2
         scrollView.bouncesZoom = false
         return scrollView
+    }()
+    private lazy var clippingBtn:UIButton = {
+       let clippingBtn = UIButton(type: UIButtonType.Custom)
+        clippingBtn.setTitle("", forState: UIControlState.Normal)
+        clippingBtn.setImage(UIImage(named: "dui"), forState: UIControlState.Normal)
+        clippingBtn.addTarget(self, action: "clickClipping", forControlEvents: UIControlEvents.TouchUpInside)
+        return clippingBtn
     }()
 
     //MARK : - 
@@ -155,7 +178,7 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
             widthScale()
         }
         let h = scrollView.frame.size.height
-        let borderRect = CGRect(x: 0, y: 64, width: clippingWidth, height: clippingHeight)
+        let borderRect = CGRect(x: 0, y: (h - clippingHeight)/2, width: clippingWidth, height: clippingHeight)
         let y3 = borderRect.origin.y + clippingHeight
         let imageInset = UIEdgeInsets(top: borderRect.origin.y, left: 0, bottom: h - y3, right: 0)
         scrollView.contentInset = imageInset
@@ -171,13 +194,14 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
         let imageViewOffset = imageView?.frame.origin
         var rect = CGRect()
         rect.origin.x = (contentOffset.x - (imageViewOffset?.x)!) * zoomScale
-        rect.origin.y = (contentOffset.y - (scrollView.bounds.size.height - clippingHeight)/2) * zoomScale
+        rect.origin.y = (contentOffset.y - (imageViewOffset?.y)! + (scrollView.bounds.size.height - clippingHeight)/2) * zoomScale
         rect.size.width = clippingWidth * zoomScale
         rect.size.height = clippingHeight * zoomScale
         let cr = CGImageCreateWithImageInRect(imageView?.image?.CGImage, rect)
         if let crv = cr {
             let cropped = UIImage(CGImage: crv)
             //TODO: cropped为剪裁完成图片可添加协议调用
+            self.imageClippingDelegate?.imageClipping(self, didFinishClippingWithImage: cropped)
         }else {
             let alert = UIAlertView(title: "", message: "裁剪失败，请重试", delegate: nil, cancelButtonTitle: "确定", otherButtonTitles: "", "")
             alert.show()
@@ -189,6 +213,10 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
         return imageView
     }
     //MARK : - 
+    func clickClipping() {
+        print("点击了剪裁")
+        finishCropping()
+    }
     //MARK : -
     /*
     // MARK: - Navigation
