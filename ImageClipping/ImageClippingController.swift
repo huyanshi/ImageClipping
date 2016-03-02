@@ -73,7 +73,12 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
         let scale = (clippingImage?.size.width)! / (clippingImage?.size.height)!
         if scale > 2 {
             clippingHeight = 160
+            heightScale()
+        }else {
+            widthScale()
         }
+        squareStyle()
+        scrollView.contentOffset = CGPoint(x: ((imageView?.frame.width)! - clippingWidth)/2, y: ((imageView?.frame.height)! - scrollView.frame.width)/2)
     }
 
     override func didReceiveMemoryWarning() {
@@ -112,10 +117,11 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
     private func widthScale() {
         let scale = scrollView.frame.size.width / (clippingImage?.size.width)!
         if scale > 1 {
-            scrollView.minimumZoomScale = scale
-            scrollView.zoomScale = scale
-            currentScaleIsHeight = false
+            scrollView.maximumZoomScale = scale + scale
         }
+        scrollView.minimumZoomScale = scale
+        scrollView.zoomScale = scale
+        currentScaleIsHeight = false
     }
     private func rectangleStyle() {
         clippingHeight = 160
@@ -149,7 +155,7 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
             widthScale()
         }
         let h = scrollView.frame.size.height
-        let borderRect = CGRect(x: 0, y: (h - clippingHeight)/2, width: clippingWidth, height: clippingHeight)
+        let borderRect = CGRect(x: 0, y: 64, width: clippingWidth, height: clippingHeight)
         let y3 = borderRect.origin.y + clippingHeight
         let imageInset = UIEdgeInsets(top: borderRect.origin.y, left: 0, bottom: h - y3, right: 0)
         scrollView.contentInset = imageInset
