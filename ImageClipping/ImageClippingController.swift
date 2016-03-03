@@ -90,7 +90,7 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
             widthScale()
         }
         squareStyle()
-        scrollView.contentOffset = CGPoint(x: ((imageView?.frame.size.width)! - clippingWidth)/2, y: ((imageView?.frame.size.height)! - scrollView.frame.width)/2)
+        scrollView.contentOffset = CGPoint(x: ((imageView?.frame.size.width)! - clippingWidth)/2, y: ((imageView?.frame.size.height)! - scrollView.frame.height)/2)
     }
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)

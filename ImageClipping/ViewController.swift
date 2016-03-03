@@ -54,21 +54,24 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         self.presentViewController(imagePickerController, animated: true , completion: nil)
     }
     //MARK: - UIImagePickerControllerDelegate
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-
-        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+//    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+//
+//        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+//        let clippingVC = ImageClippingController()
+//        clippingVC.imageClippingDelegate = self
+//        clippingVC.clippingImage = image
+////        picker.navigationBar.hidden = true
+//        picker.pushViewController(clippingVC, animated: true)
+        
+//    }
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         let clippingVC = ImageClippingController()
         clippingVC.imageClippingDelegate = self
         clippingVC.clippingImage = image
         picker.navigationBar.hidden = true
         picker.pushViewController(clippingVC, animated: true)
-        
-    }
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
-//        let clippingVC = ImageClippingController()
-//        clippingVC.clippingImage = image
-//        picker.navigationBar.hidden = true
-//        picker.navigationController!.pushViewController(TestViewController(), animated: true)
+
+       
     }
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         self .dismissViewControllerAnimated(true , completion: nil)
