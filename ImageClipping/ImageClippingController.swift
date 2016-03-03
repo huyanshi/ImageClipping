@@ -69,7 +69,7 @@ class ImageClippingController: UIViewController,UIScrollViewDelegate {
         bottomView.backgroundColor = UIColor.blackColor()
         bottomView.snp_makeConstraints { (make) -> Void in
             make.left.right.bottom.equalTo(0)
-            make.height.equalTo(73)
+            make.height.equalTo(Clipping.FootViewHeight)
         }
         clippingWidth = 320
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
