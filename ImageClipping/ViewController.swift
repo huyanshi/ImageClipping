@@ -28,7 +28,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         let cancelAction = UIAlertAction(title: "取消", style: UIAlertActionStyle.Cancel, handler: nil)
         let albumAction = UIAlertAction(title: "相册", style: UIAlertActionStyle.Default) { (UIAlertAction) -> Void in
             print("相册")
-            self.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+            self.sourceType = UIImagePickerControllerSourceType.SavedPhotosAlbum
             self.imagePickerController()
         }
         let cameraAction = UIAlertAction(title: "相机", style: UIAlertActionStyle.Default) { (UIAlertAction) -> Void in
